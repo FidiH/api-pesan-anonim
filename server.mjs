@@ -3,10 +3,14 @@ import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
+
+// cors
+app.use(cors());
 
 // Konfigurasi Cloudinary
 cloudinary.config({
@@ -32,13 +36,17 @@ const GAS_URL = process.env.GAS_URL;
 // API Submit Form
 app.post("/upload", upload.single("media"), async (req, res) => {
   if (!req.body.nama)
-    return res
-      .status(400)
-      .json({ error: "Nama nya jangan dikosongin ya baby" });
+    return res.status(400).json({
+      error: "Nama nya jangan dikosongin ya baby",
+      status: "tahan"
+    });
   if (!req.body.pesan)
     return res
       .status(400)
-      .json({ error: "Masa iya kirim ginian pesannya kosong sih baby" });
+      .json({
+        error: "Masa iya kirim ginian pesannya kosong sih baby",
+        status: "tahan"
+      });
 
   const data = {
     nama: req.body.nama,
@@ -55,6 +63,7 @@ app.post("/upload", upload.single("media"), async (req, res) => {
 
     res.json({
       balasan: "Sudah terkikirim, thankyou baby",
+      status: "boleh",
       response: await response.json()
     });
   } catch {
